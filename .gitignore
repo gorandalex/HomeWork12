@@ -4,3 +4,6 @@
 /migrations/versions/__pycache__
 /migrations/__pycache__
 /src/services/__pycache__
+/src/conf/__pycache__
+/src/repository/__pycache__
+/postgres-data
