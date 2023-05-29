@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import Depends, HTTPException, APIRouter, status
+from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.orm import Session
 
 from ..database.db import get_db
@@ -12,7 +13,7 @@ from src.services.auth import auth_service
 router = APIRouter(prefix='/contacts', tags=['/contact'])
 
 
-@router.post("/")
+@router.post("/", dependencies = [Depends(RateLimiter(times=1, seconds=10))], description='One request per 10 seconds')
 def create_contact(contact: ContactCreate, db: Session = Depends(get_db), status_code=status.HTTP_201_CREATED,
                    _: User = Depends(auth_service.get_current_user)):
     db_contact = Contact(
@@ -28,13 +29,15 @@ def create_contact(contact: ContactCreate, db: Session = Depends(get_db), status
     db.refresh(db_contact)
     return db_contact
 
-@router.get("/", response_model=List[ContactResponse])
+@router.get("/", response_model=List[ContactResponse], dependencies = [Depends(RateLimiter(times=1, seconds=10))], 
+            description='One request per 10 seconds')
 def read_contacts(skip: int = 0, limit: int = 100, db: Session = Depends(get_db),
                    _: User = Depends(auth_service.get_current_user)):
     contacts = db.query(Contact).offset(skip).limit(limit).all()
     return contacts
 
-@router.get("/{contact_id}", response_model=ContactResponse)
+@router.get("/{contact_id}", response_model=ContactResponse, dependencies = [Depends(RateLimiter(times=1, seconds=10))], 
+            description='One request per 10 seconds')
 def read_contact(contact_id: int, db: Session = Depends(get_db),
                    _: User = Depends(auth_service.get_current_user)):
     db_contact = db.query(Contact).filter(Contact.id == contact_id).first()
@@ -42,7 +45,8 @@ def read_contact(contact_id: int, db: Session = Depends(get_db),
         raise HTTPException(status_code=404, detail="Contact not found")
     return db_contact
 
-@router.put("/{contact_id}", response_model=ContactResponse)
+@router.put("/{contact_id}", response_model=ContactResponse, dependencies = [Depends(RateLimiter(times=1, seconds=10))], 
+            description='One request per 10 seconds')
 def update_contact(contact_id: int, contact: ContactUpdate, db: Session = Depends(get_db),
                    _: User = Depends(auth_service.get_current_user)):
     db_contact = db.query(Contact).filter(Contact.id == contact_id).first()
@@ -55,7 +59,8 @@ def update_contact(contact_id: int, contact: ContactUpdate, db: Session = Depend
     db.refresh(db_contact)
     return db_contact
 
-@router.delete("/{contact_id}")
+@router.delete("/{contact_id}", dependencies = [Depends(RateLimiter(times=1, seconds=10))], 
+            description='One request per 10 seconds')
 def delete_contact(contact_id: int, db: Session = Depends(get_db),
                    _: User = Depends(auth_service.get_current_user)):
     db_contact = db.query(Contact).filter(Contact.id == contact_id).first()
