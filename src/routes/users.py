@@ -25,7 +25,7 @@ async def update_avatar_user(file: UploadFile = File(), current_user: User = Dep
     public_id = UploadService.create_name_avatar(current_user.email, "contacts_base")
 
     r = UploadService.upload(file.file, public_id)
-    
+
     src_url = UploadService.get_url_avatar(public_id, r.get('version'))
     user = await repository_users.update_avatar(current_user.email, src_url, db)
     return user

@@ -27,6 +27,9 @@ starlette = "^0.27.0"
 cloudinary = "^1.33.0"
 
 
+[tool.poetry.group.dev.dependencies]
+sphinx = "^7.0.1"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

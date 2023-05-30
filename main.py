@@ -4,6 +4,7 @@ from starlette.middleware.cors import CORSMiddleware
 import uvicorn
 import redis.asyncio as redis
 from fastapi_limiter import FastAPILimiter
+from pathlib import Path
 
 from src.routes import contacts, auth, users
 
@@ -13,9 +14,9 @@ app.include_router(contacts.router)
 app.include_router(auth.router)
 app.include_router(users.router, prefix='/api')
 
-origins = [ 
+origins = [
     "http://localhost:8000",
-    ]
+]
 
 app.add_middleware(
     CORSMiddleware,
@@ -25,16 +26,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+BASE_DIR = Path(__file__).parent
+
+
 @app.on_event("startup")
 async def startup():
     r = await redis.Redis(host='localhost', port=6379, db=0)
     await FastAPILimiter.init(r)
-    
-    
+
+
 @app.get('/')
 async def root():
     return {'message': 'Contacts'}
-    
+
+
 async def start_app():
     config = uvicorn.Config("main:app", port=8000, log_level="info")
     server = uvicorn.Server(config)
@@ -43,4 +48,3 @@ async def start_app():
 
 if __name__ == "__main__":
     asyncio.run(start_app())
-    

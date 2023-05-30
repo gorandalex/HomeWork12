@@ -24,6 +24,7 @@ async def signup(body: UserModel, background_tasks: BackgroundTasks, request: Re
     background_tasks.add_task(send_email, new_user.email, new_user.username, str(request.base_url))
     return {"user": new_user, "detail": "User successfully created. Check your email for confirmation."}
 
+
 @router.post("/login", response_model=TokenModel)
 async def login(body: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = await repository_users.get_user_by_email(body.username, db)
