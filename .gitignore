@@ -7,3 +7,11 @@
 /src/conf/__pycache__
 /src/repository/__pycache__
 /postgres-data
+/.idea
+/postgres-data/base
+/postgres-data/pg_stat_tmp
+/tests/__pycache__
+/.pytest_cache
+/postgres-data/base/13458
+/postgres-data/global
+/postgres-data/base/13458/16405

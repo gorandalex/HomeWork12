@@ -68,7 +68,7 @@ async def confirmed_email(token: str, db: Session = Depends(get_db)):
     return {"message": "Email confirmed"}
 
 
-@router.post('/request_email')
+@router.post('/request_email', response_model=RequestEmail, status_code=status.HTTP_200_OK)
 async def request_email(body: RequestEmail, background_tasks: BackgroundTasks, request: Request,
                         db: Session = Depends(get_db)):
     user = await repository_users.get_user_by_email(body.email, db)

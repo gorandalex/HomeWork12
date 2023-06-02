@@ -7,7 +7,7 @@ class ContactBase(BaseModel):
     first_name: str
     last_name: str
     email: Optional[EmailStr] = None
-    phone_number: Optional[str] = None
+    phone: Optional[str] = None
     birthday: Optional[date] = None
     notes: Optional[str] = None
 
